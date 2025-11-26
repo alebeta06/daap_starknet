@@ -1,6 +1,7 @@
 {
   "name": "Scaffold Stark",
-  "image": "starknetfoundation/starknet-dev:2.12.2",
+  "image": "starknetfoundation/starknet-dev:latest",
+  "postCreateCommand": "bash -c 'git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0 && . ~/.asdf/asdf.sh && asdf plugin add scarb https://github.com/software-mansion/asdf-scarb.git && asdf plugin add starknet-devnet https://github.com/gianalarcon/asdf-starknet-devnet.git && asdf install scarb 2.12.2 && asdf install starknet-devnet 0.6.1 && asdf global scarb 2.12.2 && snfoundryup -v 0.51.1 && echo \"export ASDF_DATA_DIR=\\\"\\$HOME/.asdf\\\"\" >> ~/.bashrc && echo \". \\\"\\$HOME/.asdf/asdf.sh\\\"\" >> ~/.bashrc && echo \"export PATH=\\\"\\$HOME/.asdf/shims:\\$HOME/.local/bin:\\$PATH\\\"\" >> ~/.bashrc'",
   "customizations": {
     "vscode": {
       "extensions": ["StarkWare.cairo1", "tamasfe.even-better-toml"]
