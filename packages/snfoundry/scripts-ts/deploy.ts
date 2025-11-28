@@ -48,7 +48,7 @@ const deployScript = async (): Promise<void> => {
   await deployContract({
     contract: "CounterContract",
     constructorArgs: {
-      init_value: 5,
+      init_value: 0,
     },
   });
 };
