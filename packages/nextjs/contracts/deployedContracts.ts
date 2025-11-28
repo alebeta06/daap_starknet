@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     CounterContract: {
       address:
-        "0x15b7a8c1cc72b304f9bbf83e7089e60ee9c4c8d52623ad5bd6442ae2b962c7a",
+        "0x6b1520b8b4916227beb10a102df164700af934cb0d4cb79b0fe3857e5591eb6",
       abi: [
         {
           type: "impl",
@@ -29,6 +29,20 @@ const deployedContracts = {
               ],
               state_mutability: "view",
             },
+            {
+              type: "function",
+              name: "increase_counter",
+              inputs: [],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "decrease_counter",
+              inputs: [],
+              outputs: [],
+              state_mutability: "external",
+            },
           ],
         },
         {
@@ -49,7 +63,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x1f61bceb7a30e8230a862a353ca649b0c34c0eebc27cbb8625899ecb4442bd7",
+        "0x68af8c0cb4d2618fb399fb3dec28131eff1ea7214385774eda01c7fdfb2ec95",
     },
   },
 } as const;
