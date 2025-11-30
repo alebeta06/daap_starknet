@@ -100,6 +100,7 @@ export const DisplayVariable = ({
     functionName: abiFunction.name,
     abi: [...abi],
     blockIdentifier: "pre_confirmed" as BlockNumber, // TODO : notify when failed - add error
+    watch: true,
   });
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { showAnimation } = useAnimationConfig(result);
