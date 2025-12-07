@@ -1,59 +1,80 @@
-import Link from "next/link";
-import Image from "next/image";
+"use client";
+
 import { ConnectedAddress } from "~~/components/ConnectedAddress";
+import { CounterDisplay } from "~~/components/CounterDisplay";
+import { IncreaseCounter } from "~~/components/IncreaseCounter";
+import { DecreaseCounter } from "~~/components/DecreaseCounter";
+import { ResetCounter } from "~~/components/ResetCounter";
+import { SetCounter } from "~~/components/SetCounter";
+import { CounterEvents } from "~~/components/CounterEvents";
+import { CounterStats } from "~~/components/CounterStats";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-stark";
+import { useAccount } from "~~/hooks/useAccount";
 
 const Home = () => {
+  const { address: connectedAddress } = useAccount();
+  
+  // Get counter value to pass to DecreaseCounter for validation
+  const { data: counterData } = useScaffoldReadContract({
+    contractName: "CounterContract",
+    functionName: "get_counter",
+    watch: true,
+  });
+
+  // Get owner address
+  const { data: ownerData } = useScaffoldReadContract({
+    contractName: "CounterContract",
+    functionName: "owner",
+    watch: true,
+  });
+
+  const counter = counterData ? Number(counterData) : 0;
+  const connectedAddressStr = connectedAddress ?? "";
+  const ownerAddressStr = ownerData ? ownerData.toString() : "";
+
   return (
     <div className="flex items-center flex-col grow pt-10">
-      <div className="px-5">
-        <h1 className="text-center">
+      <div className="px-5 w-full max-w-4xl">
+        <h1 className="text-center mb-8">
           <span className="block text-2xl mb-2">Welcome to</span>
-          <span className="block text-4xl font-bold">Scaffold-Stark 2</span>
+          <span className="block text-4xl font-bold">Counter dApp</span>
         </h1>
         <ConnectedAddress />
-        <p className="text-center text-lg">
-          Edit your smart contract{" "}
-          <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-            your_contract.cairo
-          </code>{" "}
-          in{" "}
-          <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-            packages/snfoundry/contracts/src
-          </code>
-        </p>
-      </div>
 
-      <div className="bg-container grow w-full mt-16 px-8 py-12">
-        <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-          <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-            <div className="trapeze"></div>
-            <Image
-              src="/debug-icon.svg"
-              alt="icon"
-              width={26}
-              height={30}
-            ></Image>
-            <p>
-              Tinker with your smart contract using the{" "}
-              <Link href="/debug" passHref className="link">
-                Debug Contracts
-              </Link>{" "}
-              tab.
-            </p>
+        {/* Counter Display */}
+        <div className="mt-12 mb-8">
+          <CounterDisplay />
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-4 items-center justify-center mb-8 flex-wrap">
+          <IncreaseCounter />
+          <DecreaseCounter counter={counter} />
+          <ResetCounter
+            counter={counter}
+            connectedAddress={connectedAddressStr}
+            ownerAddress={ownerAddressStr}
+          />
+        </div>
+
+        {/* Set Counter (Owner Only) */}
+        {connectedAddressStr && ownerAddressStr && (
+          <div className="mb-8">
+            <SetCounter
+              connectedAddress={connectedAddressStr}
+              ownerAddress={ownerAddressStr}
+            />
           </div>
-          <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-            <div className="trapeze"></div>
-            <Image
-              src="/explorer-icon.svg"
-              alt="icon"
-              width={20}
-              height={32}
-            ></Image>
-            <p>
-              Play around with Multiwrite transactions using
-              useScaffoldMultiWrite() hook
-            </p>
-          </div>
+        )}
+
+        {/* Statistics */}
+        <div className="mb-8">
+          <CounterStats />
+        </div>
+
+        {/* Events Section */}
+        <div className="mt-8">
+          <CounterEvents />
         </div>
       </div>
     </div>
