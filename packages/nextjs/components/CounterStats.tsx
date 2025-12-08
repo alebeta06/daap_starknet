@@ -29,40 +29,49 @@ export const CounterStats = () => {
       };
     }
 
-    const increases = events.filter((e) => {
-      const reason = e.parsedArgs?.reason;
-      if (typeof reason === "string") return reason === "Increase";
-      if (typeof reason === "object" && reason) {
-        return Object.keys(reason).includes("Increase");
+    // Helper to extract reason safely
+    const extractReason = (reason: any): string | undefined => {
+      if (!reason) return undefined;
+      if (typeof reason === "string") return reason;
+      if (typeof reason === "object" && reason.variant) {
+        return reason.variant;
       }
-      return false;
+      if (typeof reason === "object") {
+        // Find which key has a truthy value (active variant)
+        const enumKeys = ["Increase", "Decrease", "Reset", "Set"];
+        for (const key of enumKeys) {
+          const value = reason[key];
+          if (value !== undefined && value !== null) {
+            if (typeof value === "object" && Object.keys(value).length === 0) {
+              return key;
+            }
+            if (value !== false && value !== 0 && value !== "") {
+              return key;
+            }
+          }
+        }
+      }
+      return undefined;
+    };
+
+    const increases = events.filter((e) => {
+      const reason = extractReason(e.parsedArgs?.reason);
+      return reason === "Increase";
     }).length;
 
     const decreases = events.filter((e) => {
-      const reason = e.parsedArgs?.reason;
-      if (typeof reason === "string") return reason === "Decrease";
-      if (typeof reason === "object" && reason) {
-        return Object.keys(reason).includes("Decrease");
-      }
-      return false;
+      const reason = extractReason(e.parsedArgs?.reason);
+      return reason === "Decrease";
     }).length;
 
     const resets = events.filter((e) => {
-      const reason = e.parsedArgs?.reason;
-      if (typeof reason === "string") return reason === "Reset";
-      if (typeof reason === "object" && reason) {
-        return Object.keys(reason).includes("Reset");
-      }
-      return false;
+      const reason = extractReason(e.parsedArgs?.reason);
+      return reason === "Reset";
     }).length;
 
     const sets = events.filter((e) => {
-      const reason = e.parsedArgs?.reason;
-      if (typeof reason === "string") return reason === "Set";
-      if (typeof reason === "object" && reason) {
-        return Object.keys(reason).includes("Set");
-      }
-      return false;
+      const reason = extractReason(e.parsedArgs?.reason);
+      return reason === "Set";
     }).length;
 
     const uniqueCallers = new Set(
