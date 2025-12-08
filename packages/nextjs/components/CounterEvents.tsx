@@ -126,7 +126,7 @@ export const CounterEvents = () => {
   }
 
   // Show only the last 10 events
-  const recentEvents = events?.slice(0, 10) || [];
+  const recentEvents = events?.slice(-10) || [];
 
   return (
     <div className="w-full max-w-2xl">
@@ -160,8 +160,17 @@ export const CounterEvents = () => {
             }
             
             const caller = parsedArgs.caller;
-            const oldValue = parsedArgs.old_value;
-            const newValue = parsedArgs.new_value;
+            // Safely extract numeric values
+            const oldValue = typeof parsedArgs.old_value === "number" 
+              ? parsedArgs.old_value 
+              : typeof parsedArgs.old_value === "bigint"
+              ? Number(parsedArgs.old_value)
+              : undefined;
+            const newValue = typeof parsedArgs.new_value === "number"
+              ? parsedArgs.new_value
+              : typeof parsedArgs.new_value === "bigint"
+              ? Number(parsedArgs.new_value)
+              : undefined;
 
             return (
               <div
